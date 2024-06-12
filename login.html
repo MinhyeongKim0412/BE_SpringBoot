@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <span th:if="${message} != null">[[${message}]]</span>
+    <span th:unless="${message} != null">로그인 상태: X</span>
+    <form action="/login" method="post">
+        아이디:<input type="text" name="userId"><br>
+        비밀번호:<input type="password" name="userPw">
+        <input type="submit" value="로그인">
+    </form>
+</body>
+</html>

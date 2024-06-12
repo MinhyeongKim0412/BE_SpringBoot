@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File List</title>
+    <script>
+        function download() {
+            let fileName = document.getElementById("fileName").value;
+            location.href="/login";
+        }
+    </script>
+</head>
+<body>
+    <table>
+        <span th:if="${resultSet == null}">결과 없음</span>
+        <span th:unless="${resultSet == null}" th:text="${resultSet[0].writer}"></span>
+        <tr>
+            <th>작성자</th>
+            <th>파일 설명</th>
+            <th>파일 이름</th>
+            <th>등록 일시</th>
+        </tr>
+        <tr th:each="result : ${resultSet}">
+            <td th:text="${result.writer}"></td>
+            <td th:text="${result.descript}"></td>
+            <td th:text="${result.origin_file_name}"></td>
+            <td th:text="${result.reg_dt}"></td>
+            <td><a th:href="@{${result.file_name}}" th:text="${result.origin_file_name}"></a></td>
+            <td><button onclick="download()">다운로드</button></td>
+            <td><input type="text" th:value="${result.file_name}"></td>
+        </tr>
+    </table>
+</body>
+</html>
