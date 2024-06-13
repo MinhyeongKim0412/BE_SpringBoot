@@ -1,10 +1,11 @@
-package com.example.demo.model;
+package com.project.blog_project.model;
 
 import lombok.Data;
 
 @Data
 public class Member {
-    private String userId;
-    private String userPw;
-    private String userNm;
+    private String memberId;
+    private String memberNm;
+    private String memberEmail;
+    private String memberLevel;
 }

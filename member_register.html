@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/member.css">
+    <title>회원가입</title>
+</head>
+<body>
+    <form action="/member/insert/action" method="post">
+    <form class="container">
+        <div class="member-container">
+          <div class="header">
+            <div>회원 가입을 위해</div>
+            <div>정보를 입력해주세요</div>
+          </div>
+          <div class="user-info">
+            <div class="user-info-email">
+              <div>* 아이디</div>
+              <input type="text" name="memberId" />
+            </div>
+            <div class="user-info-name">
+              <div>* 이름</div>
+              <input type="text" name="memberNm" />
+            </div>
+            <div class="user-info">
+                <div class="user-info-email">
+                  <div>* 이메일</div>
+                  <input type="email" name="memberEmail"/>
+                </div>
+            <div class="user-info-pw">
+              <div>* 비밀번호</div>
+              <input type="password" name="memberPw" />
+            </div>
+            <div class="user-info-pw-check">
+              <div>* 비밀번호 확인</div>
+              <input type="password" />
+            </div>
+          </div>
+          <div class="agree-check">
+            <input type="checkbox" /> 이용약관 개인정보 수집 및 이용, 마케팅 활용
+            선택에 모두 동의합니다.
+          </div>
+          <div class="btn">
+            <button type="submit">가입하기</button>
+          </div>
+        </div>
+      </div>
+    </form>
+</body>
+</html>
