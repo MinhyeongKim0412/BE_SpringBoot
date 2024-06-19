@@ -1,68 +1,86 @@
-package com.project.blog_project.contoller;
+package com.project.blog.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import com.project.blog_project.dao.MemberDao;
+
+import com.project.blog.dao.MemberDao;
 import java.util.*;
-import jakarta.servlet.http.HttpSession;
-import com.project.blog_project.model.Member;
 
 @Controller
 public class MemberController {
     @Autowired
     MemberDao memberDao;
-    @GetMapping("member/insert") // member가입 페이지로 이동
+    @GetMapping("member")
+    public String memberList(Model model){
+        //1. database 가져오는 데이터 --> tb_member_mst가져오는 쿼리 
+        //2. Data Access Object로 만들어 줘야 됨 --> dao를 객체를 만들어 1번에서 생각한 쿼리를 실행
+        //3. dao로 부터 가져오도록 dao메소드를 만들어 줘야 함 --> 메소드에 쿼리를 작성 
+        //4. 메소드를 실행시켜 프로그램에서 원하는 형태로 담아야 함 --> 메소드에서 리턴하는 데이터 타입으로 생성
+        //5. 모델에 값을 담기 --> model.addAttribute()
+
+       //   seq bigint primary key auto_increment,
+       //  id varchar(20) not null,
+       //  pw varchar(17) not null,
+        //  name varchar(20) not null,
+        //  birth_date varchar(9) not null,
+        //  email varchar(30) not null,
+        //  grade int not null default 0,
+        //  reg_dt datetime default current_timestamp,
+        //  del_fg varchar(2) default 0
+        // select seq, id, pw, name, birth_date, email, grade,reg_dt, del_fg from tb_member_mst;
+
+        // dao폴더 작성, MemberDao.java파일 작성
+        // import com.project.blog.dao.MemberDao;
+        
+        // MemberDao에 가져오는 메소드생성 -- dao.MemberDao.java파일에서  selectMemberList 메소드를 작성 
+        // 메소드 실행
+        List<Map<String,Object>> resultSet = memberDao.selectMemberList();
+
+        //모델에 값을 담기 --> model.addAttribute()
+        
+        model.addAttribute("resultSet", resultSet);
+
+        return "member/list";
+    }
+    @GetMapping("member/register")
     public String memberRegisterForm(){
-        return "member/member_register";
+        return "member/register";
     }
-    @PostMapping("member/insert/action") // member 가입페이지에서 보내는 값을 처리
-    @ResponseBody
-    public String memberRegisterAction(
-        @RequestParam String memberId,
-        @RequestParam String memberPw,
-        @RequestParam String memberNm,
-        @RequestParam String memberEmail
-    ){
-        int dup = memberDao.dupIdCheck(memberId);
-        if(dup > 0){
-            String result = "회원 아이디가 중복되었습니다<br>";
-            result += "회원가입으로 이동하여 주시기 바랍니다<br>";
-            result += "<a href='/member/insert'>회원가입</a>";
-            return result;
-        } else {
-            memberDao.insert(memberId,memberPw,memberNm,memberEmail); // id 중복체크 이후 실행
-            return "회원가입이 완료되었습니다 <a href='/member/login'>로그인 페이지로 이동바랍니다</a>";
+    @PostMapping("member/register/action")
+    public String memberRegisterAction(@RequestParam String id,
+                                       @RequestParam String pw,
+                                       @RequestParam String name,
+                                       @RequestParam String year,
+                                       @RequestParam String month,
+                                       @RequestParam String day,
+                                       @RequestParam String email1,
+                                       @RequestParam String email2){
+        if(month.length()<2){
+            month = '0'+month;
         }
-        
-    }
-    @GetMapping("member/login")
-    public String loginGet(){
-        return "member/login";
-    }
-    @PostMapping("member/login")
-    public String loginPost(@RequestParam String memberId, 
-                            @RequestParam String memberPw,
-                            Member member,
-                            HttpSession session){
-        
-        List<Map<String,Object>> resultSet = memberDao.checkMember(memberId,memberPw);
-        String memberLevel = memberDao.getMemberLevel(memberId,memberPw);
-        if( resultSet.size() > 0 ){
-            session.setAttribute("member",resultSet.get(0));
-            session.setAttribute("memberLevel", memberLevel); 
-            return "redirect:/admin/member";
-        }else {
-            return "redirect:/member/login";
+        if(day.length()<2){
+            day = '0'+day;
         }
+        String birthDate = year+month+day;
+        String email = email1+"@"+email2;
+        memberDao.insertMemberRegisterAction(id,pw,name,birthDate,email);
+        return "redirect:/member";
     }
-    @GetMapping("member/logout")
-    @ResponseBody
-    public String logout(HttpSession session){
-        session.invalidate();
-        return "logout 되었습니다";
+    @GetMapping("/member/dupcheck")
+    public String memberDupCheck(@RequestParam String id, Model model){
+        int resultSet = memberDao.depIdCheck(id);
+        if(resultSet >0 ){
+            model.addAttribute("result", id+"는  사용불가능한 아이디입니다");
+            model.addAttribute("fg", "1");
+        }else{
+            model.addAttribute("result", id+"는 사용가능한 아이디 입니다");
+            model.addAttribute("fg","0");
+        }
+        model.addAttribute("id", id);
+        return "member/dupcheck";
     }
 }
